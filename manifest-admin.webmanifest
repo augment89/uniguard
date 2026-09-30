@@ -1,0 +1,50 @@
+{
+ "name": "UniGuard — الإدارة",
+ "short_name": "UniGuard إدارة",
+ "description": "لوحة إدارة حضور الحماية العالمية (UniGuard)",
+ "lang": "ar",
+ "dir": "rtl",
+ "id": "./app.html?admin",
+ "start_url": "./admin.html",
+ "scope": "./admin.html",
+ "display": "standalone",
+ "background_color": "#14213b",
+ "theme_color": "#14213b",
+ "icons": [
+  {
+   "src": "icon-admin-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-admin-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-admin-maskable-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icon-admin-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "related_applications": [
+  {
+   "platform": "webapp",
+   "url": "manifest-admin.webmanifest"
+  },
+  {
+   "platform": "webapp",
+   "url": "manifest.webmanifest"
+  }
+ ],
+ "prefer_related_applications": false
+}

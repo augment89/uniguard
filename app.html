@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#14213b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UniGuard">
+<title>حضور الحماية العالمية | UniGuard</title>
+<script>
+  // مستخدم مسجّل دخوله سابقًا: لا تُرسم شاشة الدخول إطلاقًا (كانت تومض قبل تحميل السكربت فيبدو كأنه خرج ثم دخل)
+  // (كل تطبيق يرى حسابه فقط: الإدارة في admin.html، العامل في app.html)
+  try{ if((/\/admin\.html$/.test(location.pathname) ? localStorage.getItem('hudurak_admin_device') || localStorage.getItem('hudurak_admin_token') : localStorage.getItem('hudurak_last_phone'))) document.documentElement.classList.add('booting'); }catch(e){}
+  document.documentElement.classList.add('scroll-lock'); // شاشة التحميل ظاهرة من أول لحظة
+  // حدث «قابل للتثبيت» يُلتقط من أول لحظة: قد يصل قبل تحميل install.js، ولا يُرسله المتصفح مرة ثانية
+  window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); window.__bip = e; });
+</script>
+<style>.booting #screen-landing{display:none!important}.booting body{background:#14213b}
+/* شاشة التحميل: ظاهرة من أول لحظة (قبل تحميل أي سكربت) وتُخفى حين يجهز التطبيق */
+#splash{position:fixed;inset:0;z-index:200000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(circle at 80% 8%,rgba(231,163,62,.22),transparent 22rem),linear-gradient(160deg,#0e1b33,#1c3660 70%,#2c5c86);
+  color:#fff;font-family:'Tajawal',Tahoma,sans-serif;text-align:center;transition:opacity .35s ease;}
+#splash.sp-out{opacity:0;pointer-events:none;}
+#splash.sp-hide{display:none;}
+#splash .sp-box{width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;}
+#splash .sp-logo{height:84px;width:auto;margin-bottom:14px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3));animation:spPulse 2s ease-in-out infinite;}
+#splash .sp-logo:not([src]){visibility:hidden;}
+#splash .sp-name{font-size:22px;font-weight:800;}
+#splash .sp-co{font-size:13px;color:#c9d0de;margin-top:4px;}
+#splash .sp-bar{width:100%;height:6px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:34px;}
+#splash .sp-bar span{display:block;height:100%;width:4%;border-radius:6px;background:linear-gradient(90deg,#f0b45c,#e7a33e);transition:width .4s ease;}
+#splash .sp-row{display:flex;justify-content:space-between;gap:10px;width:100%;margin-top:10px;font-size:13px;color:#c9d0de;}
+#splash .sp-row b{color:#e7a33e;direction:ltr;}
+#splash .sp-err{margin-top:18px;font-size:14px;line-height:1.8;}
+#splash .sp-err button{margin:12px 4px 0;padding:10px 18px;border-radius:12px;border:0;font:inherit;font-weight:700;cursor:pointer;}
+#splash .sp-ver{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));font-size:11.5px;color:#8f9bb5;direction:ltr;}
+@keyframes spPulse{50%{transform:scale(1.04);}}
+/* بوابة التثبيت (فوق كل الشاشات، تحت شاشة التحميل) */
+#installGate{position:fixed;inset:0;z-index:150000;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:28px 16px;
+  background:radial-gradient(circle at 80% 8%,rgba(231,163,62,.22),transparent 22rem),linear-gradient(160deg,#0e1b33,#1c3660 70%,#2c5c86);
+  color:#fff;font-family:'Tajawal',Tahoma,sans-serif;text-align:center;}
+#installGate.hidden{display:none!important;}
+#installGate .ig-box{width:100%;max-width:400px;margin:auto;}
+#installGate .ig-logo{height:78px;width:auto;margin:0 auto 12px;display:block;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3));}
+#installGate .ig-logo:not([src]){visibility:hidden;}
+#installGate h1{font-size:23px;font-weight:800;margin:0 0 8px;line-height:1.4;}
+#installGate .ig-sub{color:#c9d0de;font-size:14.5px;line-height:1.8;margin:0 0 16px;}
+#installGate .ig-feats{list-style:none;margin:0 0 20px;padding:12px 14px;background:rgba(255,255,255,.07);border-radius:16px;text-align:right;}
+#installGate .ig-feats li{display:flex;align-items:center;gap:10px;font-size:14px;padding:5px 0;color:#e3e8f2;}
+#installGate .ig-feats li span{width:30px;height:30px;flex:none;border-radius:9px;background:rgba(231,163,62,.18);display:flex;align-items:center;justify-content:center;}
+#installGate .ig-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:58px;border:0;border-radius:16px;
+  background:linear-gradient(135deg,#f0b45c,#dd9a34);color:#14213b;font:inherit;font-size:18px;font-weight:800;cursor:pointer;text-decoration:none;
+  box-shadow:0 10px 26px rgba(231,163,62,.35);animation:igGlow 2s ease-in-out infinite;}
+#installGate .ig-btn:disabled{opacity:.6;animation:none;cursor:default;}
+#installGate .ig-btn2{display:block;width:100%;margin-top:10px;min-height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.3);
+  background:transparent;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;}
+#installGate .ig-steps{text-align:right;font-size:15px;line-height:2;background:rgba(255,255,255,.08);border-radius:14px;padding:12px 16px;margin:0;}
+#installGate ol.ig-steps{padding-right:34px;}
+#installGate .ig-steps svg{width:20px;height:20px;vertical-align:-5px;fill:none;stroke:#e7a33e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+#installGate .ig-hint{font-size:12.5px;color:#aeb8cf;margin:10px 0 0;line-height:1.8;}
+#installGate .ig-hint a{color:#e7a33e;}
+#installGate .ig-ok{font-size:19px;font-weight:800;color:#7ee0b0;margin-bottom:10px;}
+#installGate .ig-admin{display:inline-block;margin-top:22px;font-size:12.5px;color:#8f9bb5;text-decoration:underline;cursor:pointer;}
+@keyframes igGlow{50%{box-shadow:0 10px 34px rgba(231,163,62,.6);}}
+@media (prefers-reduced-motion:reduce){#installGate .ig-btn{animation:none;}}
+@media (prefers-reduced-motion:reduce){#splash .sp-logo{animation:none;}}
+#installGate .ig-steps{color:#eef2f8;}
+/* الشاشات الثابتة (التحميل، التثبيت، القفل): الصفحة خلفها لا تتحرك ولا ترتد ولا يظهر شريط فاتح أسفلها.
+   صنف scroll-lock يضعه التطبيق ويزيله حسب الحالة الفعلية (updateScrollLock) — بدل محدد :has() الذي لا تعيد
+   بعض نسخ سفاري حسابه بعد إخفاء الشاشة، فتبقى الصفحة لا تتمرّر */
+html.scroll-lock, html.scroll-lock body{overflow:hidden!important;overscroll-behavior:none;background:#14213b!important;height:100%;}
+#splash, #installGate{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+#splash{touch-action:none;}
+#splash .sp-logo, #installGate .ig-logo{-webkit-user-drag:none;pointer-events:none;}
+</style>
+<link rel="icon" id="appFavicon" type="image/png" href="">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>/*ADMIN-REDIRECT*/ /* الرابط القديم للإدارة (app.html?admin) ← صفحة الإدارة المستقلة admin.html:
+  مسار مختلف = تطبيق مستقل فعلًا (أندرويد يميّز التطبيقات بالمسار لا بـ ?admin، فكان يعتبرهما تطبيقًا واحدًا) */
+  if(/[?&]admin(=|&|$)/.test(location.search)) location.replace('admin.html' + location.hash);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css?v=2.9.4">
+<script>/* ملف التنسيق لم يصل (شبكة متقطعة أو خطأ مؤقت): يُعاد طلبه تلقائيًا بدل صفحة بلا تنسيق تظهر فيها كل النوافذ فوق بعضها */
+(function(){
+  var n = 0;
+  function cssOk(){ var t = document.createElement('div'); t.className = 'hidden'; document.body.appendChild(t); var ok = getComputedStyle(t).display === 'none'; t.remove(); return ok; }
+  function retry(){
+    if(cssOk()) return;
+    if(++n > 4){ // آخر حل: إعادة تحميل الصفحة — مرة في الدقيقة على الأكثر (لا حلقة إعادة تحميل بلا إنترنت)
+      try{ if(Date.now() - Number(sessionStorage.getItem('hudurak_css_reload') || 0) > 60000){ sessionStorage.setItem('hudurak_css_reload', String(Date.now())); location.reload(); } }catch(e){}
+      return;
+    }
+    var old = document.querySelector('link[href*="css/app.css"]'), l = document.createElement('link');
+    l.rel = 'stylesheet'; l.href = old.href.split('&r=')[0] + '&r=' + Date.now();
+    l.onload = function(){ old.remove(); }; l.onerror = function(){ setTimeout(retry, 1200 * n); };
+    old.after(l);
+  }
+  window.addEventListener('load', function(){ if(!cssOk()) retry(); });
+})();</script>
+</head>
+<body>
+<!-- ============ شاشة التحميل ============ -->
+<div id="splash" role="status" aria-live="polite">
+  <div class="sp-box">
+    <img alt="UniGuard" class="brand-logo sp-logo">
+    <div class="sp-name">حضور الحماية العالمية</div>
+    <div class="sp-co">الحماية العالمية — UniGuard</div>
+    <div class="sp-bar"><span id="spBar"></span></div>
+    <div class="sp-row"><span id="spText">جاري تجهيز التطبيق...</span><b id="spPct">0%</b></div>
+    <div id="spErr" class="sp-err hidden">
+      <div id="spErrText"></div>
+      <button style="background:#e7a33e;color:#14213b;" onclick="location.reload()">إعادة المحاولة</button>
+      <button style="background:rgba(255,255,255,.12);color:#fff;" onclick="Splash.hide()">المتابعة</button>
+    </div>
+  </div>
+  <div class="sp-ver" id="spVer"></div>
+</div>
+<div id="apiProgressBar"></div>
+
+<!-- ============ LANDING / LOGIN ============ -->
+<div id="screen-landing" class="landing">
+  <div class="landing-hero">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <h1>تسجيل الدوام ببصمة الوجه، من هاتفك مباشرة</h1>
+    <div id="modelsStatus" class="models-status">
+      <div class="models-bar"><span></span></div>
+      <p>جاري تجهيز نظام التعرف على الوجه...</p>
+    </div>
+  </div>
+  <div class="landing-form">
+    <div class="card">
+      <h2>تسجيل الدخول</h2>
+      <p class="sub">سجّل الدخول برقم هاتفك للمتابعة</p>
+
+      <div>
+        <div class="field">
+          <label for="loginPhone">رقم الهاتف</label>
+          <input type="tel" id="loginPhone" inputmode="tel" autocomplete="tel" dir="ltr" style="text-align:right;" placeholder="05xxxxxxxx" onkeydown="if(event.key==='Enter')continueWithPhone()">
+        </div>
+        <div class="field">
+          <label for="loginName">الاسم الكامل</label>
+          <input type="text" id="loginName" autocomplete="name" maxlength="60" placeholder="الاسم الثنائي على الأقل، كما في الهوية" onkeydown="if(event.key==='Enter')continueWithPhone()">
+        </div>
+        <button class="btn btn-amber btn-block" onclick="continueWithPhone()">المتابعة</button>
+      </div>
+
+            <span class="about-link" onclick="openAbout()">ⓘ حول التطبيق</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ REGISTRATION ============ -->
+<div id="screen-register" class="landing hidden">
+  <div class="landing-hero">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <h1>خطوة واحدة قبل البدء</h1>
+    <p>نحتاج بصمة وجهك مرة واحدة فقط، بعدها سيتعرف عليك النظام تلقائيًا عند كل تسجيل حضور.</p>
+  </div>
+  <div class="landing-form">
+    <div class="card" style="max-width:460px;">
+      <div class="steps">
+        <span class="active"></span>
+        <span id="stepDot2"></span>
+      </div>
+
+      <!-- step 1: face capture -->
+      <div id="regStep1">
+        <h2>تسجيل بصمة الوجه</h2>
+        <p class="sub">ضع وجهك داخل الدائرة وانظر مباشرة إلى الكاميرا</p>
+        <div class="cam-wrap">
+          <video id="regVideo" autoplay muted playsinline></video>
+          <div class="face-guide"></div>
+          <div id="regCamStatus" class="cam-status">جاري تشغيل الكاميرا...</div>
+        </div>
+        <button class="btn btn-amber btn-block" id="regCaptureBtn" onclick="captureRegistrationFace()">التقاط بصمة الوجه</button>
+      </div>
+
+      <!-- step 2: details -->
+      <div id="regStep2" class="hidden">
+        <h2>بيانات العامل</h2>
+        <p class="sub">أكمل بياناتك لإرسال طلب التسجيل. بعد مراجعة الإدارة والموافقة على حسابك، ستحدد الإدارة قيمة يوميتك ويصبح بإمكانك تسجيل الحضور.</p>
+        <div class="field"><label for="regName">الاسم الكامل</label><input type="text" id="regName" maxlength="60" autocomplete="name"></div>
+        <div class="field"><label for="regProfession">المهنة</label>
+          <select id="regProfession">
+            <option value="" disabled selected>اختر المهنة</option>
+            <option value="مليس">مليس</option>
+            <option value="دهان">دهان</option>
+            <option value="عامل">عامل</option>
+          </select>
+        </div>
+        <button class="btn btn-amber btn-block" id="regSubmitBtn" onclick="finishRegistration()">إرسال طلب التسجيل</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WAITING FOR ADMIN APPROVAL ============ -->
+<div id="screen-pending" class="landing hidden">
+  <div class="landing-hero">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <h1>طلبك قيد المراجعة</h1>
+    <p>تم استلام بيانات تسجيلك بنجاح. بانتظار موافقة الإدارة وتحديد قيمة يوميتك، بعدها يمكنك تسجيل حضورك.</p>
+  </div>
+  <div class="landing-form">
+    <div class="card" style="text-align:center;">
+      <h2>⏳ بانتظار الموافقة</h2>
+      <p class="sub" id="pendingWorkerName">-</p>
+      <button class="btn btn-amber btn-block" onclick="refreshPendingStatus()">تحديث الحالة</button>
+      <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="logout()">تسجيل الخروج</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DEVICE NOT RECOGNIZED ============ -->
+<div id="screen-device-pending" class="landing hidden">
+  <div class="landing-hero">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <h1 id="devicePendingTitle">جهاز جديد بانتظار الموافقة</h1>
+    <p id="devicePendingText">دخلت من جهاز مختلف عن جهازك المعتاد. تم إرسال طلب إلى الإدارة للموافقة على هذا الجهاز، ولا يمكنك الدخول حتى تتم الموافقة.</p>
+  </div>
+  <div class="landing-form">
+    <div class="card" style="text-align:center;">
+      <h2>⏳ بانتظار موافقة الإدارة على الجهاز</h2>
+      <button class="btn btn-amber btn-block" onclick="refreshDeviceStatus()">تحديث الحالة</button>
+      <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="logout()">رجوع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ قفل التطبيق (يُفتح بقفل الهاتف نفسه) ============ -->
+<div id="screen-lock" class="lock-screen hidden">
+  <div class="lock-box">
+    <img alt="UniGuard" class="brand-logo lock-logo">
+    <div class="lock-app">حضور الحماية العالمية</div>
+    <div class="lock-icon" aria-hidden="true">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+    </div>
+    <h2 id="lockName">مرحبًا</h2>
+    <p id="lockHint">افتح التطبيق ببصمة الإصبع أو الوجه أو رمز قفل الهاتف</p>
+    <button class="btn btn-amber btn-block lock-btn" id="lockBtn" onclick="unlockApp(true)">🔓 افتح بقفل الهاتف</button>
+    <p id="lockHelp" class="lock-help hidden">إذا غيّرت قفل هاتفك أو حذفت مفتاح التطبيق، اطلب من الإدارة «إعادة ضبط القفل» ثم أعد فتح التطبيق.</p>
+    <div class="lock-links">
+      <span onclick="openAbout()">ⓘ حول التطبيق</span>
+      <span id="lockPwLink" class="hidden" onclick="adminLockUsePassword()">الدخول باسم المستخدم وكلمة المرور</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WORKER DASHBOARD ============ -->
+<div id="screen-worker" class="hidden">
+  <div class="appbar">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <div class="appbar-right">
+      <span class="chip" id="workerNameChip"></span>
+      <button class="btn btn-ghost btn-sm bell-btn" onclick="openInbox()" title="الإشعارات" aria-label="الإشعارات">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span class="bell-badge hidden" id="inboxBadge">0</span>
+      </button>
+      <button class="btn btn-ghost btn-sm about-btn" onclick="openAbout()" title="حول التطبيق" aria-label="حول التطبيق">ⓘ</button>
+      <button class="btn btn-ghost btn-sm" id="workerExitBtn" onclick="workerExit()">تسجيل الخروج</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="hero-checkin">
+      <div>
+        <h3 id="checkinTitle">تسجيل الحضور اليوم</h3>
+        <p id="checkinSub">اضغط الزر وسيتم التحقق من وجهك تلقائيًا</p>
+      </div>
+      <button class="circle-btn" id="checkinBtn" onclick="openFaceModal()" aria-label="تسجيل الحضور">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+      </button>
+    </div>
+
+    <div class="profile-row">
+      <div class="stat-card"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></div><div><span>المهنة</span><b id="pfProfession">-</b></div></div>
+      <div class="stat-card"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div><div><span>اليومية</span><b id="pfWage">-</b></div></div>
+      <div class="stat-card"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div><div><span>رقم الهاتف</span><b id="pfPhone" style="font-size:14px;direction:ltr;unicode-bidi:plaintext;">-</b></div></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div><span>أيام حضور معتمدة (هذا الشهر)</span><b id="stApprovedDays">0</b></div></div>
+      <div class="stat-card"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div><div><span>المستحق هذا الشهر</span><b id="stMonthEarn">0</b></div></div>
+      <div class="stat-card"><div class="stat-icon stat-icon-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><div><span>حالة اليوم</span><b id="stTodayStatus">لم يسجل بعد</b></div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="stat-card stat-card-adv"><div class="stat-icon stat-icon-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2.5"></circle><path d="M6 12h.01M18 12h.01"></path></svg></div><div><span>إجمالي السلف (غير المصفّاة)</span><b id="stAdvancesTotal" dir="ltr" style="text-align:right;color:var(--red);">0</b><small class="stat-sub" id="stAdvancesSub">لا توجد سلف</small></div></div>
+      <div class="stat-card stat-card-net"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path></svg></div><div><span>رصيدك الصافي الحالي</span><b id="stNetBalance" dir="ltr" style="text-align:right;">0</b><small class="stat-sub" id="stNetSub">المستحق منذ آخر تصفية − السلف</small></div></div>
+    </div>
+
+    <div class="table-panel">
+      <div class="section-title"><h3>سلفي <small class="period-tag">الفترة الحالية</small></h3></div>
+      <div class="tbl-scroll"><table class="table-compact">
+        <thead><tr><th>التاريخ</th><th>المبلغ</th><th>ملاحظة</th><th>الحالة</th></tr></thead>
+        <tbody id="workerAdvBody"></tbody>
+      </table></div>
+      <div id="workerAdvEmpty" class="empty hidden">لا توجد سلف في الفترة الحالية</div>
+    </div>
+
+    <div class="table-panel">
+      <div class="section-title"><h3>كشف الدوام <small class="period-tag">الفترة الحالية</small></h3></div>
+      <div class="tbl-scroll"><table class="table-compact">
+        <thead><tr><th>التاريخ</th><th>الوقت</th><th>الحالة</th></tr></thead>
+        <tbody id="workerLogBody"></tbody>
+      </table></div>
+      <div id="workerLogEmpty" class="empty hidden">لا يوجد حضور في الفترة الحالية — يبدأ الكشف من جديد بعد كل تصفية</div>
+    </div>
+
+    <div class="table-panel">
+      <div class="section-title"><h3>إدارة الحساب</h3></div>
+      <div class="pk-row">
+        <div class="pk-info"><b>🔒 الفتح بقفل الهاتف</b><span id="pkStatus">جارٍ الفحص...</span></div>
+        <button class="btn btn-amber btn-sm hidden" id="pkEnableBtn" onclick="openPasskeySetup()">تفعيل</button>
+      </div>
+      <div class="pk-row">
+        <div class="pk-info"><b>🔔 الإشعارات</b><span id="notifStatus">جارٍ الفحص...</span></div>
+        <button class="btn btn-amber btn-sm hidden" id="notifBtn" onclick="enableNotifications()">تفعيل</button>
+      </div>
+      <p style="margin-bottom:14px;">إلغاء حسابك سيمنعك من تسجيل الحضور، وتبقى سجلات الحضور والسلف والتصفيات لدى الإدارة.</p>
+      <button class="btn btn-danger" onclick="workerDeleteOwnAccount()">إلغاء حسابي</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN ============ -->
+<div id="screen-admin-login" class="landing hidden">
+  <div class="landing-hero">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">حضور الحماية العالمية</span></div>
+    <h1>لوحة تحكم الإدارة</h1>
+    <p>تابع جميع العمال، اعتمد الحضور، وراقب التكلفة التشغيلية اليومية والشهرية.</p>
+  </div>
+  <div class="landing-form">
+    <div class="card">
+      <h2 id="alTitle">دخول الإدارة</h2>
+      <p class="sub" id="alSub">اسم المستخدم وكلمة المرور</p>
+      <div>
+        <div class="field" id="alUserRow"><label for="adminUser">اسم المستخدم</label><input id="adminUser" autocomplete="username" dir="ltr" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+        <div class="field"><label id="alPassLabel" for="adminPass">كلمة المرور</label><input type="password" id="adminPass" autocomplete="current-password" dir="ltr" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+        <div class="hidden" id="alNewRows">
+          <div class="field" id="alNewUserRow"><label for="adminNewUser">اسم المستخدم (دائم)</label><input id="adminNewUser" dir="ltr" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="مثل: admin"></div>
+          <div class="field"><label for="adminNewPass">كلمة المرور الجديدة</label><input type="password" id="adminNewPass" autocomplete="new-password" dir="ltr"></div>
+          <div class="field"><label for="adminNewPass2">تأكيد كلمة المرور الجديدة</label><input type="password" id="adminNewPass2" autocomplete="new-password" dir="ltr"></div>
+          <p class="al-hint">10 أحرف على الأقل، وفيها حروف وأرقام.</p>
+        </div>
+      </div>
+      <button class="btn btn-amber btn-block" id="adminLoginBtn" onclick="adminLogin()">دخول</button>
+      <p id="adminLoginError" class="hidden" style="color:var(--red);margin-top:10px;font-size:13px;line-height:1.8;"></p>
+      <span class="admin-link" id="alBackLink" onclick="showScreen('screen-landing')">← رجوع لتسجيل دخول العامل</span>
+      <span class="about-link" onclick="openAbout()">ⓘ حول التطبيق</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<div id="screen-admin" class="hidden">
+  <div class="appbar">
+    <div class="brand"><img alt="Uniguard" class="brand-logo"><span class="brand-tag">لوحة الإدارة</span></div>
+    <div class="appbar-right">
+      <button class="btn btn-ghost btn-sm about-btn" onclick="openAbout()" title="حول التطبيق" aria-label="حول التطبيق">ⓘ</button>
+      <button class="btn btn-ghost btn-sm" onclick="openAdminSecurity()" title="أمان الحساب" aria-label="أمان الحساب">🔐 الأمان</button>
+      <button class="btn btn-ghost btn-sm" id="adminExitBtn" onclick="adminExit()">تسجيل الخروج</button>
+    </div>
+  </div>
+  <div class="admin-layout">
+    <div class="sidebar">
+      <button class="admin-tab active" data-tab="overview" onclick="switchAdminTab('overview')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>نظرة عامة</span></button>
+      <button class="admin-tab" data-tab="workers" onclick="switchAdminTab('workers')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>العمال</span></button>
+      <button class="admin-tab" data-tab="summary" onclick="switchAdminTab('summary')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg><span>الملخص</span></button>
+      <button class="admin-tab" data-tab="log" onclick="switchAdminTab('log')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg><span>كشف الدوام</span></button>
+      <button class="admin-tab" data-tab="devices" onclick="switchAdminTab('devices')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg><span>أجهزة جديدة<span class="count-badge hidden" id="devicesTabCount">0</span></span></button>
+    </div>
+    <div class="admin-main">
+
+      <div id="tab-overview">
+        <div id="serverNotice" class="server-notice hidden" role="status"></div>
+        <div class="grid-4">
+          <div class="stat-card"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div><span>إجمالي العمال</span><b id="admTotalWorkers">0</b></div></div>
+          <div class="stat-card"><div class="stat-icon stat-icon-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div><div><span>طلبات بانتظار الموافقة</span><b id="admPending">0</b></div></div>
+          <div class="stat-card"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div><div><span>تكلفة التشغيل اليوم</span><b id="admDailyCost">0</b></div></div>
+          <div class="stat-card"><div class="stat-icon stat-icon-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></div><div><span>تكلفة التشغيل هذا الشهر</span><b id="admMonthCost">0</b></div></div>
+        </div>
+
+        <div class="table-panel">
+          <div class="section-title"><h3>طلبات تسجيل عمال جدد<span class="count-badge hidden" id="pendingWorkersCount">0</span></h3></div>
+          <div id="pendingWorkersBody" class="req-list"></div>
+          <div id="pendingWorkersEmpty" class="empty hidden">لا توجد طلبات تسجيل جديدة</div>
+        </div>
+
+        <div class="table-panel">
+          <div class="section-title"><h3>طلبات حضور بانتظار الموافقة</h3><div class="tools"><input type="search" id="pendingSearch" class="search-input" placeholder="🔍 بحث بالاسم" oninput="pageReset('pendingBody');renderPending()"><button class="btn btn-green btn-sm" onclick="approveAllPending()">اعتماد الكل</button></div></div>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>العامل</th><th>المهنة</th><th>التاريخ</th><th>الوقت</th><th>إجراء</th></tr></thead>
+            <tbody id="pendingBody"></tbody>
+          </table></div>
+          <div id="pendingEmpty" class="empty hidden">لا توجد طلبات بانتظار الموافقة</div>
+        </div>
+      </div>
+
+      <div id="tab-workers" class="hidden">
+        <div class="table-panel">
+          <div class="section-title"><h3>قائمة العمال</h3><input type="search" id="workerSearch" class="search-input" placeholder="🔍 بحث بالاسم أو المهنة أو رقم الهاتف" oninput="pageReset('workersBody');renderWorkersTable()"></div>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>الاسم</th><th>المهنة</th><th>اليومية</th><th>رقم الهاتف</th><th>الحالة</th><th>تاريخ التسجيل</th><th>إجراءات</th></tr></thead>
+            <tbody id="workersBody"></tbody>
+          </table></div>
+          <div id="workersEmpty" class="empty hidden">لا يوجد عمال لعرضهم</div>
+        </div>
+      </div>
+
+      <div id="tab-summary" class="hidden">
+        <details class="table-panel" open>
+          <summary class="section-title"><h3>كشف الدوام الرسمي الشهري</h3></summary>
+          <div class="tools" style="justify-content:flex-end;margin-bottom:14px;">
+            <input type="search" id="matrixSearch" class="search-input" placeholder="🔍 بحث عن عامل" oninput="renderMonthlyMatrix()">
+            <select id="matrixMonthSelect" class="search-input" onchange="renderAdminSummary()"></select>
+          </div>
+          <div class="tbl-scroll always">
+            <table id="matrixTable" style="min-width:600px;"></table>
+          </div>
+          <div id="matrixEmpty" class="empty hidden">لا يوجد عمال لهذا الشهر</div>
+          <div class="summary-actions">
+            <button class="btn btn-green" id="closeMonthBtn" onclick="closeMonthForAll()">✅ تصفية الشهر وإنشاء تقرير PDF</button>
+            <button class="btn btn-outline" id="previewPdfBtn" onclick="previewReportPdf()">📄 معاينة التقرير PDF (بدون تصفية)</button>
+          </div>
+          <p class="summary-note">التقرير يشمل: كشف الدوام الكامل، ملخص الحسابات لكل عامل، كشف السلف، التكلفة التشغيلية لكل مهنة والإجمالية. عند التصفية يُحفظ كملف Google Sheets مستقل باسم الشهر (في نفس مجلد ملف العمل) ويمكن فتحه أو تنزيله لاحقًا من الأرشيف.</p>
+        </details>
+
+        <details class="table-panel" open>
+          <summary class="section-title"><h3 id="professionTitle">التكلفة التشغيلية حسب المهنة</h3></summary>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>المهنة</th><th>عدد العمال</th><th>أيام معتمدة</th><th>التكلفة</th></tr></thead>
+            <tbody id="professionBody"></tbody>
+            <tfoot id="professionFoot"></tfoot>
+          </table></div>
+          <div id="professionEmpty" class="empty hidden">لا يوجد حضور معتمد في هذا الشهر</div>
+        </details>
+
+        <details class="table-panel" open>
+          <summary class="section-title"><h3>ملخص حسابات العمال (منذ آخر تصفية)</h3></summary>
+          <div class="panel-tools"><input type="search" id="accountSearch" class="search-input" placeholder="🔍 بحث بالاسم أو المهنة" oninput="pageReset('accountsBody');renderAccountsTable()"></div>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>العامل</th><th>المهنة</th><th>المستحق</th><th>السلف</th><th>الرصيد الصافي</th><th>إجراءات</th></tr></thead>
+            <tbody id="accountsBody"></tbody>
+            <tfoot id="accountsFoot"></tfoot>
+          </table></div>
+          <div id="accountsEmpty" class="empty hidden">لا يوجد عمال لعرضهم</div>
+        </details>
+
+        <details class="table-panel">
+          <summary class="section-title"><h3 id="monthAdvTitle">كشف السلف</h3></summary>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>التاريخ</th><th>العامل</th><th>المهنة</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+            <tbody id="monthAdvBody"></tbody>
+            <tfoot id="monthAdvFoot"></tfoot>
+          </table></div>
+          <div id="monthAdvEmpty" class="empty hidden">لا توجد سلف في هذا الشهر</div>
+        </details>
+
+        <details class="table-panel">
+          <summary class="section-title"><h3>الأرشيف الشهري المحفوظ</h3></summary>
+          <div class="tbl-scroll"><table class="table-responsive">
+            <thead><tr><th>الشهر</th><th>تاريخ التصفية</th><th>عدد العمال</th><th>التكلفة التشغيلية</th><th>الصافي المدفوع</th><th></th></tr></thead>
+            <tbody id="archiveBody"></tbody>
+          </table></div>
+          <div id="archiveEmpty" class="empty hidden">لا يوجد أرشيف بعد</div>
+        </details>
+      </div>
+
+      <div id="tab-log" class="hidden">
+        <div class="table-panel">
+          <div class="section-title">
+            <h3>كشف الدوام الكامل</h3>
+            <div class="tools">
+              <input type="search" id="logSearch" class="search-input" placeholder="🔍 بحث بالاسم أو التاريخ" oninput="pageReset('fullLogBody');renderAdminLog()">
+              <select id="logFilter" class="search-input" onchange="pageReset('fullLogBody');renderAdminLog()">
+                <option value="">كل العمال</option>
+              </select>
+            </div>
+          </div>
+          <div class="tbl-scroll"><table class="table-compact">
+            <thead><tr><th>العامل</th><th>التاريخ</th><th>الوقت</th><th>الحالة</th></tr></thead>
+            <tbody id="fullLogBody"></tbody>
+          </table></div>
+          <div id="fullLogEmpty" class="empty hidden">لا توجد سجلات لعرضها</div>
+        </div>
+      </div>
+
+      <div id="tab-devices" class="hidden">
+        <div class="table-panel">
+          <div class="section-title"><h3>طلبات دخول من أجهزة جديدة</h3></div>
+          <p style="margin-bottom:14px;">كل عامل مرتبط بجهاز واحد معتمد. عند محاولة الدخول من جهاز مختلف يظهر طلبه هنا — لن يتمكن من الدخول حتى تعتمد جهازه أو ترفضه.</p>
+          <div id="devicesBody" class="req-list"></div>
+          <div id="devicesEmpty" class="empty hidden">لا توجد طلبات أجهزة جديدة</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ FACE CHECK-IN MODAL ============ -->
+<div id="faceModal" class="hidden" style="position:fixed;inset:0;background:rgba(20,32,28,.7);display:flex;align-items:center;justify-content:center;z-index:200;">
+  <div class="card" style="max-width:420px;">
+    <h2>تسجيل الحضور</h2>
+    <p class="sub">انظر إلى الكاميرا مباشرة</p>
+    <div class="cam-wrap">
+      <video id="checkVideo" autoplay muted playsinline></video>
+      <div class="face-guide"></div>
+      <div id="checkCamStatus" class="cam-status">جاري تشغيل الكاميرا...</div>
+    </div>
+    <button class="btn btn-amber btn-block" id="checkCaptureBtn" onclick="captureCheckin()">تحقق من الوجه</button>
+    <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="closeFaceModal()">إلغاء</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ============ مركز إشعارات العامل (محفوظة على الهاتف) ============ -->
+<div id="inboxModal" class="hidden" style="position:fixed;inset:0;background:rgba(14,27,51,.6);display:flex;align-items:flex-start;justify-content:center;z-index:100000;" onclick="if(event.target===this)closeInbox()">
+  <div class="card about-card inbox-card" role="dialog" aria-modal="true" aria-labelledby="inboxTitle">
+    <div class="inbox-head">
+      <h2>الإشعارات</h2>
+      <button class="inbox-x" onclick="closeInbox()" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="inbox-tools">
+      <div class="inbox-tabs" role="tablist">
+        <button class="on" data-f="all" onclick="setInboxFilter('all')">الكل</button>
+        <button data-f="unread" onclick="setInboxFilter('unread')">غير المقروءة <span id="inboxUnreadN"></span></button>
+      </div>
+      <div class="inbox-acts">
+        <button onclick="inboxMarkAllRead()">✓ قراءة الكل</button>
+        <button class="danger" onclick="inboxClear()">حذف الكل</button>
+      </div>
+    </div>
+    <div id="inboxList" class="inbox-list"></div>
+  </div>
+</div>
+
+<!-- ============ تصفية الحساب (تبقى حتى يضغط العامل "تم") ============ -->
+<div id="settleModal" class="hidden" style="position:fixed;inset:0;background:rgba(14,27,51,.84);display:flex;align-items:center;justify-content:center;z-index:100000;">
+  <div class="card about-card settle-card" role="alertdialog" aria-modal="true" aria-labelledby="settleTitle">
+    <div class="settle-head">
+      <div class="settle-icon" aria-hidden="true">✓</div>
+      <h2 id="settleTitle">تمت تصفية حسابك</h2>
+      <p id="settlePeriod"></p>
+    </div>
+    <div class="settle-body">
+      <div class="settle-paid"><span>المبلغ المدفوع لك</span><b id="settlePaid">0</b></div>
+      <table class="about-tbl settle-tbl" id="settleRows"></table>
+      <p class="settle-note" id="settleNote"></p>
+      <button class="btn btn-amber btn-block settle-ok" id="settleOk" onclick="ackSettlement()">تم ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ تفعيل الفتح بقفل الهاتف ============ -->
+<div id="passkeyModal" class="hidden" style="position:fixed;inset:0;background:rgba(20,32,28,.7);display:flex;align-items:center;justify-content:center;z-index:210;">
+  <div class="card about-card" style="max-width:400px;text-align:center;">
+    <div class="lock-icon" style="margin:4px auto 12px;" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+    </div>
+    <h2>احمِ حسابك بقفل الهاتف</h2>
+    <p class="sub">بعد التفعيل يُفتح التطبيق ببصمة الإصبع أو الوجه أو رمز قفل هاتفك فقط، فلا يستطيع أحد غيرك فتح حسابك. التطبيق لا يرى بصمتك ولا رمزك.</p>
+    <button class="btn btn-amber btn-block" id="passkeyYes" onclick="enablePasskey()">🔒 تفعيل الآن</button>
+    <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="passkeyLater()">لاحقًا</button>
+  </div>
+</div>
+
+<!-- ============ ADVANCE PAYMENT MODAL ============ -->
+<div id="advanceModal" class="hidden" style="position:fixed;inset:0;background:rgba(20,32,28,.7);display:flex;align-items:center;justify-content:center;z-index:200;">
+  <div class="card" style="max-width:380px;">
+    <h2>تسجيل سلفة</h2>
+    <p class="sub" id="advanceWorkerLabel">للعامل: -</p>
+    <div class="field"><label for="advanceAmount">قيمة السلفة</label><input type="number" id="advanceAmount" placeholder="مثال: 200"></div>
+    <button class="btn btn-amber btn-block" onclick="submitAdvance()">حفظ السلفة</button>
+    <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="closeAdvanceModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- ============ ARCHIVE VIEW MODAL ============ -->
+<div id="archiveViewModal" class="hidden" style="position:fixed;inset:0;background:rgba(20,32,28,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;">
+  <div class="card" style="max-width:900px;width:100%;max-height:85vh;overflow:auto;">
+    <h2 id="archiveViewTitle">كشف الدوام</h2>
+    <div id="archiveViewContent"></div>
+    <button class="btn btn-outline btn-block" style="margin-top:14px;" onclick="closeArchiveView()">إغلاق</button>
+  </div>
+</div>
+
+<!-- ============ حول التطبيق ============ -->
+<!-- ============ أمان حساب الإدارة ============ -->
+<div id="securityModal" class="hidden" style="position:fixed;inset:0;background:rgba(14,27,51,.66);display:flex;align-items:flex-start;justify-content:center;z-index:250;padding:16px;overflow-y:auto;" onclick="if(event.target===this)closeAdminSecurity()">
+  <div class="card sec-card">
+    <div class="sec-head"><h3>🔐 أمان حساب الإدارة</h3><button class="sec-x" onclick="closeAdminSecurity()" aria-label="إغلاق">✕</button></div>
+    <div class="sec-acc" id="secAccount"></div>
+    <div class="sec-sec">
+      <div class="pk-row">
+        <div class="pk-info"><b>🔒 الفتح بقفل الهاتف</b><span id="admPkStatus">جارٍ الفحص...</span></div>
+        <button class="btn btn-amber btn-sm hidden" id="admPkBtn" onclick="adminToggleLock()">تفعيل</button>
+      </div>
+      <div class="pk-row">
+        <div class="pk-info"><b>🔔 الإشعارات</b><span id="admNotifStatus">جارٍ الفحص...</span></div>
+        <button class="btn btn-amber btn-sm hidden" id="admNotifBtn" onclick="enableNotifications()">تفعيل</button>
+      </div>
+    </div>
+    <div class="sec-sec">
+      <div class="sec-title">صفحة الإدارة (لا يوجد لها رابط في التطبيق)</div>
+      <div class="sec-link"><span dir="ltr" id="secAdminUrl"></span><button class="btn btn-outline btn-sm" onclick="copyAdminUrl(this)">نسخ</button></div>
+      <p class="al-hint">احفظها في المفضلة أو ثبّتها كتطبيق مستقل على جهازك. العمال لا يرون أي أثر للإدارة.</p>
+    </div>
+    <div class="sec-sec">
+      <div class="sec-title">أجهزة الفتح بقفل الهاتف</div>
+      <div id="secKeys" class="sec-keys"></div>
+      <p class="al-hint">يُضاف الجهاز عند تفعيل «الفتح بقفل الهاتف» عليه. حذف جهاز يُنهي جلساته فورًا (مثلًا إن فُقد الهاتف).</p>
+    </div>
+    <div class="sec-sec">
+      <div class="sec-title">كلمة المرور</div>
+      <button class="btn btn-outline btn-block" onclick="document.getElementById('secPwForm').classList.toggle('hidden')">تغيير كلمة المرور</button>
+      <div id="secPwForm" class="hidden" style="margin-top:10px;">
+        <div class="field"><label for="secOldPass">كلمة المرور الحالية</label><input type="password" id="secOldPass" autocomplete="current-password" dir="ltr"></div>
+        <div class="field"><label for="secNewPass">كلمة المرور الجديدة</label><input type="password" id="secNewPass" autocomplete="new-password" dir="ltr"></div>
+        <div class="field"><label for="secNewPass2">تأكيد الجديدة</label><input type="password" id="secNewPass2" autocomplete="new-password" dir="ltr"></div>
+        <p class="al-hint">10 أحرف على الأقل، وفيها حروف وأرقام. التغيير يُنهي الجلسات على الأجهزة الأخرى.</p>
+        <button class="btn btn-amber btn-block" id="secPwBtn" onclick="adminChangePassword()">حفظ كلمة المرور</button>
+      </div>
+    </div>
+    <div class="sec-sec">
+      <div class="sec-title">الجلسات</div>
+      <p class="al-hint" id="secSessions"></p>
+      <button class="btn btn-block sec-danger" onclick="adminLogoutOthers()">إنهاء كل الجلسات الأخرى</button>
+      <button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="setModal('securityModal', false); logout()">تسجيل الخروج من هذا الجهاز</button>
+      <p class="al-hint">بعد الخروج يلزم اسم المستخدم وكلمة المرور من جديد، بدل الفتح بقفل الهاتف.</p>
+    </div>
+  </div>
+</div>
+
+<div id="aboutModal" class="hidden" style="position:fixed;inset:0;background:rgba(20,32,28,.7);display:flex;align-items:center;justify-content:center;z-index:260;padding:20px;" onclick="if(event.target===this)closeAbout()">
+  <div class="card about-card" style="max-width:440px;width:100%;max-height:88vh;overflow:auto;padding:0;">
+    <div class="about-head">
+      <img alt="UniGuard" class="brand-logo about-logo">
+      <div class="about-name" id="aboutName"></div>
+      <div class="about-en" id="aboutNameEn"></div>
+      <span class="about-ver" id="aboutVersion"></span>
+    </div>
+    <div class="about-body">
+      <table class="about-tbl" id="aboutInfo"></table>
+      <details class="about-diag hidden" id="aboutDiag"><summary>تشخيص الاتصال (للمطوّر)</summary><div id="aboutDiagList"></div></details>
+      <button class="btn btn-outline btn-block" id="aboutUpdateBtn" onclick="checkAppUpdate()">🔄 البحث عن تحديث</button>
+      <button class="btn btn-amber btn-block" style="margin-top:8px;" onclick="closeAbout()">إغلاق</button>
+      <p class="about-copy" id="aboutCopy"></p>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js?v=2.9.4"></script>
+<script src="js/app.js?v=2.9.4"></script>
+
+<!-- ============ تثبيت التطبيق (PWA) — نافذة عند أول فتح + زر تثبيت سريع ثابت ============ -->
+<!-- بوابة التثبيت: أول فتح من متصفح الهاتف — لا تظهر صفحة الدخول قبل تثبيت التطبيق -->
+<div id="installGate" class="hidden" role="dialog" aria-modal="true" aria-labelledby="igTitle">
+  <div class="ig-box">
+    <img alt="UniGuard" class="brand-logo ig-logo">
+    <h1 id="igTitle">ثبّت تطبيق حضور الحماية العالمية</h1>
+    <p class="ig-sub">لاستخدام التطبيق ثبّته على هاتفك أولًا — مرة واحدة فقط، ولا يحتاج متجر التطبيقات.</p>
+    <ul class="ig-feats">
+      <li><span>⚡</span>يفتح فورًا من الشاشة الرئيسية </li>
+      <li><span>🔔</span>تصلك إشعارات الموافقات والتصفية</li>
+      <li><span>🔒</span>يفتح ببصمة الإصبع أو رمز قفل هاتفك</li>
+    </ul>
+    <div id="igAction" class="ig-action"></div>
+    
+  </div>
+</div>
+<div id="installBanner" role="dialog" aria-label="تثبيت التطبيق" hidden></div>
+<button id="installFab" type="button" hidden aria-label="تثبيت التطبيق">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+  <span>تثبيت التطبيق</span><span class="fab-x" id="installFabX" aria-label="إخفاء">×</span>
+</button>
+<script src="js/install.js?v=2.9.4"></script>
+</body>
+</html>
+

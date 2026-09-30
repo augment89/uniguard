@@ -1,0 +1,47 @@
+{
+ "name": "حضور الحماية العالمية | UniGuard",
+ "short_name": "UniGuard",
+ "description": "تطبيق تسجيل الدوام ببصمة الوجه لشركة الحماية العالمية (UniGuard)",
+ "lang": "ar",
+ "dir": "rtl",
+ "id": "./",
+ "start_url": "./app.html",
+ "scope": "./app.html",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#14213b",
+ "theme_color": "#14213b",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-maskable-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "related_applications": [
+  {
+   "platform": "webapp",
+   "url": "manifest.webmanifest"
+  }
+ ],
+ "prefer_related_applications": false
+}

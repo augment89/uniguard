@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14213b">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>التحقق من تقرير | UniGuard</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#182338;--soft:#5b6479;--dark:#14213b;--amber:#e7a33e;--green:#1f7a56;--green-bg:#e6f2ea;--red:#bd4438;--red-bg:#fbeae6;--line:#e7dfcc;}
+*{box-sizing:border-box;}
+html,body{margin:0;background:#f3ede0;color:var(--ink);font-family:'Tajawal',Tahoma,sans-serif;}
+/* الرأس */
+.top{background:linear-gradient(160deg,#0e1b33,#1c3660 70%,#2c5c86);color:#fff;padding:22px 16px 26px;text-align:center;}
+.top-in{max-width:1180px;margin:0 auto;}
+.top img{height:62px;display:block;margin:0 auto 8px;}
+.top h1{margin:0;font-size:21px;font-weight:800;}
+.top p{margin:4px 0 0;color:#c9d0de;font-size:13.5px;}
+.top .co{display:none;}
+main{max-width:720px;margin:-14px auto 30px;padding:0 16px;}
+.card{background:#fff;border-radius:18px;box-shadow:0 14px 40px rgba(40,30,10,.10);padding:18px;margin-bottom:14px;}
+/* نموذج الإدخال */
+label{display:block;font-weight:700;font-size:14px;margin:0 0 6px;}
+input{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;direction:ltr;text-align:left;margin-bottom:12px;background:#fffdf8;}
+input:focus{outline:2px solid rgba(231,163,62,.55);border-color:var(--amber);}
+button{width:100%;min-height:50px;border:0;border-radius:14px;background:linear-gradient(135deg,#f0b45c,#dd9a34);color:var(--dark);font:inherit;font-size:17px;font-weight:800;cursor:pointer;}
+button:disabled{opacity:.6;cursor:default;}
+button.ghost{background:#fff;border:1px solid var(--line);font-size:15px;min-height:44px;}
+.how{display:none;}
+.how h3{margin:0 0 10px;font-size:17px;color:var(--dark);}
+.how ol{margin:0;padding-right:20px;line-height:2;color:var(--soft);font-size:14.5px;}
+.how ol b{color:var(--ink);}
+/* النتيجة */
+.res{border-radius:16px;padding:16px;margin-bottom:14px;font-size:15px;line-height:1.8;}
+.res h2{margin:0 0 4px;font-size:19px;}
+.ok{background:var(--green-bg);color:var(--green);border:1px solid #bfe0cc;}
+.bad{background:var(--red-bg);color:var(--red);border:1px solid #f0c7bf;}
+.warn{background:#fff6e6;color:#8a5a12;border:1px solid #f1d7a8;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0 4px;}
+.grid div{background:#f7f5ef;border-radius:12px;padding:8px 10px;font-size:12.5px;color:var(--soft);}
+.grid b{display:block;font-size:17px;color:var(--ink);direction:ltr;text-align:right;}
+.grid .hl{background:var(--dark);color:#c9d0de;} .grid .hl b{color:#fff;}
+.meta{font-size:13px;color:var(--soft);line-height:2;}
+.meta b{color:var(--ink);direction:ltr;display:inline-block;}
+.actions{display:flex;gap:8px;margin-top:12px;}
+.tbl-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+@media (max-width:979px){.tbl-head input{max-width:none;}}
+.tbl-head h3{margin:0;font-size:16px;color:var(--dark);}
+.tbl-head input{max-width:240px;min-height:40px;margin:0;font-size:14px;direction:rtl;text-align:right;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{background:var(--dark);color:#fff;padding:8px 6px;font-weight:700;white-space:nowrap;}
+td{padding:8px 6px;border-bottom:1px solid #eee;text-align:center;font-variant-numeric:tabular-nums;}
+td.nm{text-align:right;font-weight:700;}
+td small{display:block;font-weight:400;font-size:11.5px;color:var(--soft);}
+tfoot td{background:#fbeeda;font-weight:800;border-top:2px solid var(--amber);}
+.c-no,.c-prof{display:none;}
+.hint{font-size:13px;color:var(--soft);line-height:1.9;margin:8px 0 0;}
+.empty-row td{color:var(--soft);padding:16px;}
+.hidden{display:none!important;}
+@media (min-width:560px){.grid{grid-template-columns:repeat(3,1fr);}}
+
+/* ---------- شاشات الكمبيوتر ---------- */
+@media (min-width:980px){
+  .top{padding:22px 32px 46px;text-align:right;}
+  .top-in{display:flex;align-items:center;gap:18px;}
+  .top img{height:64px;margin:0;}
+  .top h1{font-size:26px;}
+  .top p{font-size:15px;}
+  .top .co{display:block;margin-right:auto;text-align:left;color:#c9d0de;font-size:14px;line-height:1.7;}
+  .top .co b{display:block;color:#fff;font-size:17px;}
+  main{max-width:1180px;margin-top:-26px;padding:0 32px;}
+  .card{padding:24px;border-radius:20px;}
+  /* الإدخال: النموذج بجانب شرح «كيف تتحقق» */
+  #form{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start;}
+  #form .card{margin:0;}
+  .fields{display:grid;grid-template-columns:1fr 1.3fr;gap:0 14px;}
+  .how{display:block;background:#fbf8f0;box-shadow:none;border:1px solid var(--line);}
+  button{max-width:none;}
+  /* النتيجة: البيانات والإجماليات جانبًا، وجدول العمال بعرض الشاشة */
+  .res{font-size:16px;padding:18px 22px;}
+  .res h2{font-size:22px;}
+  .report{display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px;align-items:start;}
+  .report > .card{margin:0;}
+  .side{position:sticky;top:16px;}
+  .grid{grid-template-columns:repeat(2,1fr);}
+  .grid b{font-size:19px;}
+  .meta{font-size:14px;}
+  table{font-size:14.5px;}
+  th{padding:11px 10px;} td{padding:10px;}
+  tbody tr:nth-child(even) td{background:#fafbfd;}
+  tbody tr:hover td{background:#fff6e6;}
+  .c-no,.c-prof{display:table-cell;}
+  td.nm small{display:none;}
+}
+/* الطباعة: النتيجة فقط، بلا أزرار ولا بحث */
+@media print{
+  html,body{background:#fff;}
+  .top{background:#fff;color:var(--ink);padding:0 0 10px;border-bottom:2px solid var(--dark);}
+  .top p,.top .co{color:var(--soft);}
+  main{max-width:none;margin:10px 0;padding:0;}
+  .card{box-shadow:none;border:1px solid #ddd;}
+  .actions,.tbl-head input,#form{display:none!important;}
+  .side{position:static;}
+  .c-no,.c-prof{display:table-cell;} td.nm small{display:none;}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <img id="logo" alt="UniGuard">
+    <div>
+      <h1>التحقق من تقرير الدوام والرواتب</h1>
+      <p>تأكد أن التقرير الذي بين يديك أصلي ولم تُعدَّل أرقامه</p>
+    </div>
+    <div class="co"><b>الحماية العالمية</b>UniGuard</div>
+  </div>
+</header>
+<main>
+  <div id="result"></div>
+  <section id="form">
+    <div class="card">
+      <div class="fields">
+        <div><label for="rno">رقم التقرير</label>
+          <input id="rno" placeholder="RPT-202609-6B8B6D" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+        <div><label for="rsig">رمز التحقق</label>
+          <input id="rsig" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+      </div>
+      <button id="go">تحقق</button>
+      <p class="hint">الرقم والرمز مطبوعان على التقرير. الأسهل: امسح رمز QR الموجود في آخر صفحة بكاميرا الهاتف، أو افتح رابط التحقق المطبوع تحته.</p>
+    </div>
+    <aside class="card how">
+      <h3>كيف تتحقق من تقرير؟</h3>
+      <ol>
+        <li>افتح <b>رابط التحقق</b> المطبوع في آخر صفحة من التقرير، أو امسح <b>رمز QR</b> بكاميرا الهاتف.</li>
+        <li>أو أدخل <b>رقم التقرير</b> (أعلى كل صفحة) و<b>رمز التحقق</b> (أسفل كل صفحة) ثم اضغط «تحقق».</li>
+        <li>قارن الأرقام التي تظهر هنا بالتقرير الذي بين يديك — <b>أي اختلاف يعني أن النسخة معدّلة</b>.</li>
+      </ol>
+    </aside>
+  </section>
+</main>
+<script src="js/config.js?v=2.9.4"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); };
+  var riyadh = function(iso){ var d = new Date(iso); if(isNaN(d)) return String(iso || '');
+    var p = {}; new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Riyadh', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false }).formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
+    return p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute; };
+  var fmt = function(n){ return (Number(n) || 0).toLocaleString('en-US'); };
+  var norm = function(s){ return String(s || '').replace(/[ً-ْ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase(); };
+  try{ $('logo').src = LOGO_SRC; }catch(e){}
+  var q = new URLSearchParams(location.search);
+  var id = q.get('id') || '', sig = q.get('s') || '';
+  // يُزال الرمز من شريط العنوان بعد قراءته (لا يبقى في السجل أو عند مشاركة الشاشة)
+  if(id || sig){ try{ history.replaceState(null, '', location.pathname); }catch(e){} }
+
+  function show(html){ $('result').innerHTML = html; }
+  function verify(id, sig){
+    $('go').disabled = true;
+    show('<div class="res warn">⏳ جاري التحقق من أرشيف الشركة...</div>');
+    fetch(WEB_APP_URL, { method:'POST', redirect:'follow', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({ apiKey: SHEET_API_KEY, action:'verifyReport', data:{ id:id, sig:sig } }) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if(!j.ok) throw new Error(j.error || 'تعذر التحقق');
+        if(!j.valid){
+          show('<div class="res bad"><h2>❌ التقرير غير صحيح</h2>' + esc(j.reason) +
+            '<p class="hint" style="color:inherit">لا تعتمد هذه النسخة. اطلب من الإدارة نسخة أصلية من التطبيق.</p></div>');
+          return;
+        }
+        var r = j.report, t = r.totals || {}, ws = r.workers || [];
+        var sum = function(f){ return ws.reduce(function(s, w){ return s + (Number(w[f]) || 0); }, 0); };
+        var rows = ws.map(function(w, i){
+          return '<tr data-q="' + esc(norm(w.name + ' ' + w.profession)) + '"><td class="c-no">' + (i + 1) + '</td>' +
+            '<td class="nm">' + esc(w.name) + '<small>' + esc(w.profession) + '</small></td><td class="c-prof">' + esc(w.profession) + '</td>' +
+            '<td>' + fmt(w.approvedDays) + '</td><td>' + fmt(w.advances) + '</td><td><b>' + fmt(w.paid) + '</b></td><td>' + (w.carried ? fmt(w.carried) : '-') + '</td></tr>';
+        }).join('') || '<tr class="empty-row"><td colspan="7">لا يوجد عمال في هذا التقرير</td></tr>';
+        var foot = ws.length ? '<tfoot><tr><td class="c-no"></td><td class="nm">الإجمالي</td><td class="c-prof"></td><td>' + fmt(sum('approvedDays')) +
+          '</td><td>' + fmt(sum('advances')) + '</td><td>' + fmt(sum('paid')) + '</td><td>' + fmt(sum('carried')) + '</td></tr></tfoot>' : '';
+        show('<div class="res ok"><h2>✅ التقرير أصلي وموقّع من الخادم</h2>الأرقام أدناه هي المحفوظة في أرشيف الشركة عند الإقفال. قارنها بالتقرير الذي بين يديك — <b>أي اختلاف يعني أن النسخة معدّلة</b>.</div>' +
+          (j.settlementsOk === false ? '<div class="res warn">⚠ المدفوع في التقرير لا يطابق سجل التصفيات لبعض العمال — راجع الإدارة.</div>' : '') +
+          (r.signedLater ? '<div class="res warn">ℹ هذا التقرير أُقفل قبل تفعيل التوقيع، ووُقّع لاحقًا كما هو محفوظ في الأرشيف.</div>' : '') +
+          '<div class="report"><aside class="card side"><div class="meta">رقم التقرير: <b>' + esc(r.reportNo) + '</b><br>الشهر: ' + esc(r.monthLabel) +
+          '<br>تاريخ الإقفال: <b>' + esc(riyadh(r.closedAt)) + '</b><br>رمز التحقق: <b>' + esc(r.signature) + '</b></div>' +
+          '<div class="grid"><div class="hl">التكلفة التشغيلية<b>' + fmt(t.totalCost) + '</b></div><div>عدد العمال<b>' + fmt(t.workers) + '</b></div>' +
+          '<div>أيام معتمدة<b>' + fmt(t.approvedDays) + '</b></div><div>إجمالي السلف<b>' + fmt(t.totalAdvances) + '</b></div>' +
+          '<div>الصافي المدفوع<b>' + fmt(t.totalNet) + '</b></div><div>رصيد مرحّل<b>' + fmt(t.totalCarried) + '</b></div></div>' +
+          '<div class="actions"><button class="ghost" id="vPrint">🖨 طباعة</button><button class="ghost" id="vAgain">تحقق من تقرير آخر</button></div></aside>' +
+          '<section class="card"><div class="tbl-head"><h3>المدفوع لكل عامل (' + fmt(ws.length) + ')</h3>' +
+          (ws.length > 5 ? '<input id="vSearch" type="search" placeholder="🔎 ابحث عن عامل أو مهنة" autocomplete="off">' : '') + '</div>' +
+          '<div class="tw"><table><thead><tr><th class="c-no">#</th><th>العامل</th><th class="c-prof">المهنة</th><th>أيام معتمدة</th><th>السلف</th><th>المدفوع</th><th>المرحّل</th></tr></thead><tbody>' +
+          rows + '</tbody>' + foot + '</table></div></section></div>');
+        $('form').classList.add('hidden');
+        $('vPrint').onclick = function(){ window.print(); };
+        $('vAgain').onclick = function(){ show(''); $('rno').value = ''; $('rsig').value = ''; $('form').classList.remove('hidden'); window.scrollTo(0, 0); $('rno').focus(); };
+        if($('vSearch')) $('vSearch').oninput = function(){
+          var v = norm(this.value.trim());
+          [].forEach.call(document.querySelectorAll('#result tbody tr[data-q]'), function(tr){ tr.classList.toggle('hidden', !!v && tr.getAttribute('data-q').indexOf(v) < 0); });
+        };
+      })
+      .catch(function(e){
+        show('<div class="res bad">تعذر الاتصال بالخادم: ' + esc(e.message) + '<br>تحقق من الإنترنت ثم أعد المحاولة.</div>');
+      })
+      .then(function(){ $('go').disabled = false; });
+  }
+  $('go').onclick = function(){
+    var no = $('rno').value.trim(), s = $('rsig').value.trim();
+    if(!no || !s){ show('<div class="res warn">أدخل رقم التقرير ورمز التحقق كما هما مطبوعان على التقرير.</div>'); return; }
+    verify(no, s);
+  };
+  ['rno', 'rsig'].forEach(function(k){ $(k).addEventListener('keydown', function(e){ if(e.key === 'Enter') $('go').click(); }); });
+  if(id && sig) verify(id, sig);
+})();
+</script>
+</body>
+</html>

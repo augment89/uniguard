@@ -13,7 +13,7 @@ const APP_SHORT = 'UniGuard';
 const COMPANY_AR = 'الحماية العالمية';
 
 // الخادم (Google Apps Script)
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyUa4yQs8GIkesOxj98ian-NEbmn4OTYlho8SnojUZqfoQbBe1CGaLZp6NfoYsRgJNC1w/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby0yn_SX4NFy-b-vig0mpOWs66XD77nO76IrvFznu78tDlYLx7sgQqqQDoHV6tJ3iwIYQ/exec";
 const SHEET_API_KEY = "wrk-1fA3kQ7xLm2ZpT8vB4nRc6YdH1sEu3Jg";
 
 // نماذج التعرف على الوجه
